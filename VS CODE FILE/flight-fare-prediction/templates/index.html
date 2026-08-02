@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Fare Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Flight Fare Prediction</h1>
+        <p class="subtitle">PRCP-1025 &mdash; Enter flight details to estimate the ticket price</p>
+
+        <form method="POST" class="fare-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="airline">Airline</label>
+                    <select name="airline" id="airline" required>
+                        {% for airline in airlines %}
+                        <option value="{{ airline }}" {% if form_values.get('airline') == airline %}selected{% endif %}>{{ airline }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="source">Source</label>
+                    <select name="source" id="source" required>
+                        {% for source in sources %}
+                        <option value="{{ source }}" {% if form_values.get('source') == source %}selected{% endif %}>{{ source }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="destination">Destination</label>
+                    <select name="destination" id="destination" required>
+                        {% for destination in destinations %}
+                        <option value="{{ destination }}" {% if form_values.get('destination') == destination %}selected{% endif %}>{{ destination }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="total_stops">Total Stops</label>
+                    <select name="total_stops" id="total_stops" required>
+                        {% for stop in stops_options %}
+                        <option value="{{ stop }}" {% if form_values.get('total_stops') == stop|string %}selected{% endif %}>{{ stop }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="journey_day">Journey Day</label>
+                    <input type="number" name="journey_day" id="journey_day" min="1" max="31"
+                           value="{{ form_values.get('journey_day', '') }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="journey_month">Journey Month</label>
+                    <input type="number" name="journey_month" id="journey_month" min="1" max="12"
+                           value="{{ form_values.get('journey_month', '') }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="dep_hour">Departure Hour</label>
+                    <input type="number" name="dep_hour" id="dep_hour" min="0" max="23"
+                           value="{{ form_values.get('dep_hour', '') }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="dep_min">Departure Minute</label>
+                    <input type="number" name="dep_min" id="dep_min" min="0" max="59"
+                           value="{{ form_values.get('dep_min', '') }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="arrival_hour">Arrival Hour</label>
+                    <input type="number" name="arrival_hour" id="arrival_hour" min="0" max="23"
+                           value="{{ form_values.get('arrival_hour', '') }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="arrival_min">Arrival Minute</label>
+                    <input type="number" name="arrival_min" id="arrival_min" min="0" max="59"
+                           value="{{ form_values.get('arrival_min', '') }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration_mins">Duration (minutes)</label>
+                    <input type="number" name="duration_mins" id="duration_mins" min="1"
+                           value="{{ form_values.get('duration_mins', '') }}" required>
+                </div>
+            </div>
+
+            <button type="submit" class="predict-btn">Predict Fare</button>
+        </form>
+
+        {% if prediction is not none %}
+        <div class="result-box">
+            <span class="result-label">Predicted Price</span>
+            <span class="result-value">&#8377; {{ prediction }}</span>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="error-box">{{ error }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>
